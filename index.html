@@ -9,6 +9,7 @@
 <body>
     <h1>Hello</h1>
     <div id="gateway"></div>
+    <div id="pinfo">Player info</div>
 </body>
 
 <script>
@@ -509,9 +510,11 @@ function processEndGamePrizes(claimedPrizes) {
         }
 
 function displayPlayerInfo(playerData) {
-    console.log('info');
+    const p = document.getElementById('pinfo');
+    p.textContent = "playerinfo";
     if (playerData && playerData.result) {
         gameState.playerInfo = playerData.result;
+        p.textContent = playerData.result;
         return [
             playerData.result.goldenHeart || '0',
             parseInt(playerData.result.turn) || 0,
