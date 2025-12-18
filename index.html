@@ -365,7 +365,6 @@ async function fetchAccountData(token) {
         if (data.errorCode === 0) {
             if (data.result && data.result.length > 0) {
                 const msisdn = data.result[0].msisdn;
-                accountManager.saveAccount(token, msisdn, data.result);
             }
             return data.result; // ✅ now returns result to caller
         } else {
