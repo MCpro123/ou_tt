@@ -153,45 +153,47 @@ async function fetchTokenDirect(accessToken, phoneNumber) {
     }
 }
 
-async function fetchMyIDToken(token, phoneNumber, maxRetries = 10) {
-    console.log('ခနစောင့်ပါ....', 'loading');
-    console.log('Connecting to MyID...', 'info');
-
-    let attempt = 0;
-
-    while (attempt < maxRetries) {
-        try {
-            attempt++;
-            console.log(`Attempt ${attempt}/${maxRetries}`);
-
-            const data = await fetchTokenDirect(token, phoneNumber);
-
-            if (data.success && data.token) {
-                const extractedToken = data.token;
-                window.token = extractedToken;
-
-                console.log('Token extracted successfully');
-                
-                loadGatewayJS();
-                return; // ✅ stop retrying
-            }
-
-            throw new Error(data.message || 'Failed to get token');
-
-        } catch (error) {
-            console.error(`Attempt ${attempt} failed:`, error.message);
-
-            if (attempt >= maxRetries) {
-                console.error('All retry attempts failed');
-                throw error; // ❌ throw only after 10 attempts
-            }
-
-            // optional delay before retry
-            await new Promise(res => setTimeout(res, 1000));
+function fetchMyIDToken(token, phoneNumber, retryCount = 0) {
+    return new Promise((resolve) => {
+        const fetchTokenBtn = document.getElementById('fetchTokenBtn');
+        if (fetchTokenBtn) {
+            fetchTokenBtn.classList.add('loading');
+            fetchTokenBtn.disabled = true;
         }
-    }
-}
 
+        console.log('ခနစောင့်ပါ....loading');
+        console.log('Connecting to MyID...info');
+
+        const attempt = () => {
+            fetchTokenDirect(token, phoneNumber)
+                .then(data => {
+                    if (data.success && data.token) {
+                        window.token = data.token;
+                        console.log('Connected successfully success');
+                        loadGatewayJS();
+                        resolve(true); // resolve on success
+                    } else if (retryCount < 3) {
+                        setTimeout(() => {
+                            fetchMyIDToken(token, phoneNumber, retryCount + 1).then(resolve);
+                        }, 1000);
+                    } else {
+                        resolve(false); // max retries
+                    }
+                })
+                .catch(() => {
+                    if (retryCount < 3) {
+                        setTimeout(() => {
+                            fetchMyIDToken(token, phoneNumber, retryCount + 1).then(resolve);
+                        }, 1000);
+                    } else {
+                        resolve(false); // max retries
+                    }
+                });
+        };
+
+        attempt();
+    });
+}
 // function fetchMyIDToken(token, phoneNumber) {
 
     
