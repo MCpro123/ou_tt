@@ -1231,39 +1231,14 @@ setTimeout(() => {
 // };
 
 window.getPlayerInfo = function() {
-    return new Promise((resolve, reject) => {
-        if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
-            window.apis.getPlayerInfo()
-                .then(result => {
-                    // Store raw result in gameState
-                    gameState.playerInfo = result;
-                    
-                    // Log for debugging
-                    console.log('Player Info Result:', result);
-                    
-                    // Return the raw result directly
-                    resolve(result);
-                })
-                .catch(error => {
-                    console.error('Error getting player info:', error);
-                    reject(error);
-                });
-        } else {
-            console.log('APIs not available yet, retrying in 500ms...');
-            setTimeout(() => {
-                if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
-                    window.apis.getPlayerInfo()
-                        .then(result => {
-                            console.log('Player Info (retry):', result);
-                            resolve(result);
-                        })
-                        .catch(reject);
-                } else {
-                    reject(new Error('APIs still not available'));
-                }
-            }, 500);
-        }
-    });
+    return window.apis.getPlayerInfo()
+        .then(result => {
+            return displayPlayerInfo(result); // or raw result
+        })
+        .catch(err => {
+            console.error('Error getting player info:', err);
+            return null; // return null on error
+        });
 };
 
 
