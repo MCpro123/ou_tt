@@ -249,15 +249,11 @@ function initializeSystem() {
                 console.log('gateway.js loaded successfully');
                 initializeSystem();
             };
-            //
-            gatewayScript.onerror = function() {
+
                 
                 console.log('Failed to load gateway.js', 'error');
                 console.log('Failed to load gateway.js. Please try again.', 'error');
-            };
             
-            document.getElementById('gatewayScriptContainer').innerHTML = '';
-            document.getElementById('gatewayScriptContainer').appendChild(gatewayScript);
         }
 
 
@@ -341,8 +337,7 @@ const accountManager = new AccountManager();
 
 async function fetchAccountData(token) {
     const apiUrl = 'https://apis.mytel.com.mm/account-detail/api/v1.2/individual/account-main?isdn=09688888888&language=en';
-    console.log(token)
-    console.log('HelloToken')
+    
     try {
         // Timeout promise
         const timeoutPromise = new Promise((_, reject) =>
