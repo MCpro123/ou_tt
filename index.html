@@ -266,6 +266,7 @@ function loadGatewayJS() {
     // Attach to the div with id="gateway"
     const container = document.getElementById('gateway');
     if (container) {
+        container.innerHTML = '';
         container.appendChild(gatewayScript);
     } else {
         console.error('Div #gateway not found');
