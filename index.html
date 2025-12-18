@@ -441,7 +441,7 @@ function loadSavedModePreference() {
 
 function switchGameMode(mode) {
             if (gameState.isAutoRunning) {
-                addGameLog('Please stop auto play before switching modes', 'info');
+                console.log('Please stop auto play before switching modes', 'info');
                 return;
             }
             
@@ -574,13 +574,13 @@ async function startAutoGame(){
                 
                 // Use the current selected mode
                 if (gameState.currentMode === 'HERO') {
-                    addGameLog('HERO Mode auto game started','info');
+                    console.log('HERO Mode auto game started','info');
                     heroGameLoop();
                 } else if (gameState.currentMode === 'NORMAL') {
-                    addGameLog('NORMAL Mode auto game started','info');
+                    console.log('NORMAL Mode auto game started','info');
                     normalGameLoop();
                 } else {
-                    addGameLog('WORLD Mode auto game started','info');
+                    console.log('WORLD Mode auto game started','info');
                     gameLoop();
                 }
             }else{
@@ -658,7 +658,7 @@ async function gameLoop() {
                         processEndGamePrizes(endResult.result.claimedPrizes);
                         console.log('Game completed successfully.', 'success');
                             } else {
-                                addGameLog('Game completed but no prizes received', 'info');
+                                console.log('Game completed but no prizes received', 'info');
                             }
                         } catch (endError) {
                             if (endError.message.includes('timeout')) {
@@ -737,7 +737,7 @@ function decreaseTurnsImmediately() {
 
 
 async function createGame() {
-     addGameLog('Creating new game...', 'info');
+     console.log('Creating new game...', 'info');
     
     try {
         gameState.bossId = null;
@@ -765,13 +765,13 @@ async function createGame() {
             gameState.t2 = result.result.t2;
             gameState.wave = 0;
             gameState.score = 0;
-			 addGameLog(`Game created successfully with hero: ${selectedHero}`, 'success');
+			 console.log(`Game created successfully with hero: ${selectedHero}`, 'success');
             return true;
         } else {
             throw new Error(`Create game failed: ${result.message}`);
         }
     } catch (error) {
-        addGameLog(`Create game error: ${error.message}`, 'error');
+        console.log(`Create game error: ${error.message}`, 'error');
         throw error;
     }
 }
@@ -796,7 +796,7 @@ async function createGame() {
                     throw new Error(`Next wave failed: ${result.message}`);
                 }
             } catch (error) {
-                addGameLog(`Next wave error: ${error.message}`, 'error');
+                console.log(`Next wave error: ${error.message}`, 'error');
                 gameState.sessionId = null;
                 throw error;
             }
@@ -804,13 +804,13 @@ async function createGame() {
         
         async function killBoss() {
             if (!gameState.bossId || gameState.bossId.trim() === '') {
-                addGameLog('Invalid boss ID, recreating game...', 'error');
+                console.log('Invalid boss ID, recreating game...', 'error');
                 gameState.sessionId = null;
                 return false;
             }
             
             if (!gameState.t1 || !gameState.t2 || !gameState.sessionId || !gameState.msisdn) {
-                addGameLog('Missing required game state parameters', 'error');
+                console.log('Missing required game state parameters', 'error');
                 return false;
             }
             
@@ -837,7 +837,7 @@ async function createGame() {
                 if (result.success) {
                     const prizeCode = result.result.prizeCode ? result.result.prizeCode : 'No prize';
                     const processedPrize = simplePrizeProcessor(prizeCode);
-                    addGameLog(`Wave ${gameState.wave} Prize: ${processedPrize}`, 'success');
+                    console.log(`Wave ${gameState.wave} Prize: ${processedPrize}`, 'success');
                     
                     // Show prize image for data and points
                     if (prizeCode.includes('RD_DATA')) {
@@ -852,7 +852,7 @@ async function createGame() {
                 } else {
                     if (result.message && (result.message.includes('Session ID is not OK')) || result.message && (result.message.includes('invalid response was received from'))) {
                         stopAutoGame();
-                        showPlayMessage(' Auto Play ကိုပြန်နှိပ်ပါ', 'error');
+                        console.log(' Auto Play ကိုပြန်နှိပ်ပါ', 'error');
                         return false;
                     } else {
                         return false;
@@ -860,13 +860,13 @@ async function createGame() {
                 }
                 
             } catch (error) {
-                addGameLog(`Kill boss failed: ${error.message}`, 'error');
+                console.log(`Kill boss failed: ${error.message}`, 'error');
                 return false;
             }
         }
 
         async function heroCreateGame() {
-            addGameLog('Creating HERO game...','info');
+            console.log('Creating HERO game...','info');
             try {
                 gameState.bossId = null;
 				decreaseTurnsImmediately();
@@ -881,12 +881,12 @@ async function createGame() {
                     gameState.wave     = 0;
                     // initialise score to the HERO base value
                     gameState.score    = HERO_CONFIG.baseScore;
-                    addGameLog(`HERO game created successfully with hero: ${selectedHero}`,'success');
+                    console.log(`HERO game created successfully with hero: ${selectedHero}`,'success');
                     return true;
                 }
                 throw new Error(result && result.message ? String(result.message) : 'Unknown error');
             } catch (e) {
-                addGameLog(`Create game error: ${e.message}`,'error');
+                console.log(`Create game error: ${e.message}`,'error');
                 throw e;
             }
         }
@@ -902,7 +902,7 @@ async function createGame() {
                 }
                 throw new Error('No boss IDs returned from server');
             } catch (e) {
-                addGameLog(`Next wave error: ${e.message}`,'error');
+                console.log(`Next wave error: ${e.message}`,'error');
                 gameState.sessionId = null;
                 throw e;
             }
@@ -910,7 +910,7 @@ async function createGame() {
 
         async function heroKillBoss() {
             if (!gameState.bossId) {
-                addGameLog('Invalid boss ID, recreating game...','error');
+                console.log('Invalid boss ID, recreating game...','error');
                 gameState.sessionId = null;
                 return false;
             }
@@ -923,19 +923,19 @@ async function createGame() {
                 if (result && result.success) {
                     const prizeCode = (result.result && result.result.prizeCode) ? result.result.prizeCode : 'No prize';
                     const processed = simplePrizeProcessor(prizeCode);
-                    addGameLog(`Wave ${gameState.wave} Prize: ${processed}`,'success');
+                    console.log(`Wave ${gameState.wave} Prize: ${processed}`,'success');
                     // show prize via existing helper if available
                     try { if (typeof detectAndShowPrize === 'function') detectAndShowPrize(prizeCode); } catch(_){}
                     return true;
                 }
                 if (result && result.message && result.message.includes('Session ID is not OK')) {
                     stopAutoGame();
-                    showPlayMessage(' Auto Play ကိုပြန်နှိပ်ပါ','error');
+                    console.log(' Auto Play ကိုပြန်နှိပ်ပါ','error');
                     return false;
                 }
                 return false;
             } catch (e) {
-                addGameLog(`Kill boss failed: ${e.message}`,'error');
+                console.log(`Kill boss failed: ${e.message}`,'error');
                 return false;
             }
         }
@@ -967,7 +967,7 @@ async function createGame() {
                         await delay(100);
                     }
                         } catch (waveErr) {
-                            addGameLog(`Wave ${wave} error: ${waveErr.message}`,'error');
+                            console.log(`Wave ${wave} error: ${waveErr.message}`,'error');
 							await delay(100);
                         }
                     }
@@ -976,10 +976,10 @@ async function createGame() {
                             const endRes = await heroEndGame();
                             if (endRes && endRes.success && endRes.result && endRes.result.claimedPrizes) {
                                 processEndGamePrizes(endRes.result.claimedPrizes);
-                                addGameLog('HERO Game completed successfully.','success');
+                                console.log('HERO Game completed successfully.','success');
                             }
                         } catch (endErr) {
-                            addGameLog(`End game error: ${endErr.message}`,'error');
+                            console.log(`End game error: ${endErr.message}`,'error');
                         }
                         // reset for next loop
                         gameState.wave  = 0;
@@ -989,9 +989,9 @@ async function createGame() {
                     }
                 } catch (loopErr) {
                     consecutiveErrors++;
-                    addGameLog(`Game loop error: ${loopErr.message}`,'error');
+                    console.log(`Game loop error: ${loopErr.message}`,'error');
                     if (consecutiveErrors >= MAX_ERRORS) {
-                        addGameLog('Too many consecutive errors, stopping auto game','error');
+                        console.log('Too many consecutive errors, stopping auto game','error');
                         stopAutoGame();
                         break;
                     }
@@ -1013,7 +1013,7 @@ async function createGame() {
         // Normal Mode Game Functions
         async function normalCreateGame() {
             gameState.currentGameMode = 'Normal Mode';
-            addGameLog('Creating NORMAL game...','info');
+            console.log('Creating NORMAL game...','info');
             try {
                 gameState.bossId = null;
 				decreaseTurnsImmediately();
@@ -1027,12 +1027,12 @@ async function createGame() {
                     gameState.t2       = result.result.t2;
                     gameState.wave     = 0;
                     gameState.score    = 0;
-                    addGameLog('NORMAL game created successfully with hero: ${selectedHero}','success');
+                    console.log('NORMAL game created successfully with hero: ${selectedHero}','success');
                     return true;
                 }
                 throw new Error(result && result.message ? String(result.message) : 'Unknown error');
             } catch (e) {
-                addGameLog(`Create game error: ${e.message}`,'error');
+                console.log(`Create game error: ${e.message}`,'error');
                 throw e;
             }
         }
@@ -1048,7 +1048,7 @@ async function createGame() {
                 }
                 throw new Error('No boss IDs returned from server');
             } catch (e) {
-                addGameLog(`Next wave error: ${e.message}`,'error');
+                console.log(`Next wave error: ${e.message}`,'error');
                 gameState.sessionId = null;
                 throw e;
             }
@@ -1056,7 +1056,7 @@ async function createGame() {
 
         async function normalKillBoss(wave) {
             if (!gameState.bossId) {
-                addGameLog('Invalid boss ID, recreating game...','error');
+                console.log('Invalid boss ID, recreating game...','error');
                 gameState.sessionId = null;
                 return false;
             }
@@ -1070,18 +1070,18 @@ async function createGame() {
                 if (result && result.success) {
                     const prizeCode = (result.result && result.result.prizeCode) ? result.result.prizeCode : 'No prize';
                     const processed = simplePrizeProcessor(prizeCode);
-                    addGameLog(`Wave ${wave} Prize: ${processed}`,'success');
+                    console.log(`Wave ${wave} Prize: ${processed}`,'success');
                     try { if (typeof detectAndShowPrize === 'function') detectAndShowPrize(prizeCode); } catch(_){}
                     return true;
                 }
                 if (result && result.message && result.message.includes('Session ID is not OK')) {
                     stopAutoGame();
-                    showPlayMessage(' Auto Play ကိုပြန်နှိပ်ပါ','error');
+                    console.log(' Auto Play ကိုပြန်နှိပ်ပါ','error');
                     return false;
                 }
                 return false;
             } catch (e) {
-                addGameLog(`Kill boss failed: ${e.message}`,'error');
+                console.log(`Kill boss failed: ${e.message}`,'error');
                 return false;
             }
         }
@@ -1118,7 +1118,7 @@ async function createGame() {
                         await delay(100);
                     }
                         } catch (waveErr) {
-                            addGameLog(`Wave ${wave} error: ${waveErr.message}`,'error');
+                            console.log(`Wave ${wave} error: ${waveErr.message}`,'error');
 							await delay(100);
                         }
                     }
@@ -1127,19 +1127,19 @@ async function createGame() {
                             const endRes = await normalEndGame();
                             if (endRes && endRes.success && endRes.result && endRes.result.claimedPrizes) {
                                 processEndGamePrizes(endRes.result.claimedPrizes);
-                                addGameLog('NORMAL Game completed successfully.','success');
+                                console.log('NORMAL Game completed successfully.','success');
                             }
                         } catch (endErr) {
-                            addGameLog(`End game error: ${endErr.message}`,'error');
+                            console.log(`End game error: ${endErr.message}`,'error');
                         }
                         gameState.wave  = 0;
                         gameState.score = 0;
                     }
                 } catch (loopErr) {
                     consecutiveErrors++;
-                    addGameLog(`Game loop error: ${loopErr.message}`,'error');
+                    console.log(`Game loop error: ${loopErr.message}`,'error');
                     if (consecutiveErrors >= MAX_ERRORS) {
-                        addGameLog('Too many consecutive errors, stopping auto game','error');
+                        console.log('Too many consecutive errors, stopping auto game','error');
                         stopAutoGame();
                         break;
                     }
