@@ -509,19 +509,18 @@ function processEndGamePrizes(claimedPrizes) {
         }
 
 function displayPlayerInfo(playerData) {
-   
-    console.log('info')
+    console.log('info');
     if (playerData && playerData.result) {
         gameState.playerInfo = playerData.result;
-        
-       console.log([playerData.result.goldenHeart || '0',parseInt(playerData.result.turn) || 0,parseInt(playerData.result.remainTurn) || 0,playerData.result.diamond ? 
-		Number(playerData.result.diamond).toLocaleString() : '0'])
-        return [playerData.result.goldenHeart || '0',parseInt(playerData.result.turn) || 0,parseInt(playerData.result.remainTurn) || 0,playerData.result.diamond ? 
-		Number(playerData.result.diamond).toLocaleString() : '0']
-
-        // Re-initialize phone number visibility after updating player info
-        setTimeout(initPhoneNumberVisibility, 100);
+        return [
+            playerData.result.goldenHeart || '0',
+            parseInt(playerData.result.turn) || 0,
+            parseInt(playerData.result.remainTurn) || 0,
+            playerData.result.diamond ? Number(playerData.result.diamond).toLocaleString() : '0'
+        ];
     }
+    // fallback if result is missing
+    return ['0', 0, 0, '0'];
 }
 
 async function heartToDiamond() {
@@ -1217,6 +1216,7 @@ window.getPlayerInfo = function() {
         if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
             window.apis.getPlayerInfo()
                 .then(result => {
+                    console.log('Raw getPlayerInfo result:', result);
                     const data = displayPlayerInfo(result);
                     resolve(data);
                 })
