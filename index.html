@@ -1235,28 +1235,14 @@ window.getPlayerInfo = function() {
         if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
             window.apis.getPlayerInfo()
                 .then(result => {
-                    // Store the raw result in gameState
+                    // Store raw result in gameState
                     gameState.playerInfo = result;
                     
-                    // Log to console for debugging
+                    // Log for debugging
                     console.log('Player Info Result:', result);
                     
-                    if (result && result.result) {
-                        const playerData = result.result;
-                        console.log('Player Details:', {
-                            goldenHeart: playerData.goldenHeart || '0',
-                            turn: playerData.turn || '0',
-                            remainTurn: playerData.remainTurn || '0',
-                            diamond: playerData.diamond || '0'
-                        });
-                        
-                        // Update UI elements if they exist
-                        const displayData = displayPlayerInfo(result);
-                        resolve(displayData);
-                    } else {
-                        console.log('No player data in response');
-                        resolve(['0', 0, 0, '0']);
-                    }
+                    // Return the raw result directly
+                    resolve(result);
                 })
                 .catch(error => {
                     console.error('Error getting player info:', error);
@@ -1264,14 +1250,12 @@ window.getPlayerInfo = function() {
                 });
         } else {
             console.log('APIs not available yet, retrying in 500ms...');
-            // Retry after a short delay
             setTimeout(() => {
                 if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
                     window.apis.getPlayerInfo()
                         .then(result => {
                             console.log('Player Info (retry):', result);
-                            const data = displayPlayerInfo(result);
-                            resolve(data);
+                            resolve(result);
                         })
                         .catch(reject);
                 } else {
