@@ -510,11 +510,12 @@ function processEndGamePrizes(claimedPrizes) {
 
 function displayPlayerInfo(playerData) {
    
-    
+    console.log('info')
     if (playerData && playerData.result) {
         gameState.playerInfo = playerData.result;
         
-       
+       console.log([playerData.result.goldenHeart || '0',parseInt(playerData.result.turn) || 0,parseInt(playerData.result.remainTurn) || 0,playerData.result.diamond ? 
+		Number(playerData.result.diamond).toLocaleString() : '0'])
         return [playerData.result.goldenHeart || '0',parseInt(playerData.result.turn) || 0,parseInt(playerData.result.remainTurn) || 0,playerData.result.diamond ? 
 		Number(playerData.result.diamond).toLocaleString() : '0']
 
