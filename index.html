@@ -1199,18 +1199,36 @@ setTimeout(() => {
 }
 
 
-window.getPlayerInfo = function() {
-setTimeout(() => {
-    if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
-        window.apis.getPlayerInfo().then(result => {
-            displayPlayerInfo(result);
-        }).catch(error => {
-            console.log('Error getting player info:', error);
-        });
-    } 
+// window.getPlayerInfo = function() {
+// setTimeout(() => {
+//     if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
+//         window.apis.getPlayerInfo().then(result => {
+//             displayPlayerInfo(result);
+//         }).catch(error => {
+//             console.log('Error getting player info:', error);
+//         });
+//     } 
 
-}, 100);
-}
+// }, 100);
+// }
+
+window.getPlayerInfo = function() {
+    return new Promise((resolve, reject) => {
+        if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
+            window.apis.getPlayerInfo()
+                .then(result => {
+                    const data = displayPlayerInfo(result);
+                    resolve(data);
+                })
+                .catch(error => {
+                    console.log('Error getting player info:', error);
+                    reject(error);
+                });
+        } else {
+            reject(new Error('window.apis.getPlayerInfo not available'));
+        }
+    });
+};
 
 
 if (typeof window.apis.buyTicketCreateGame !== 'function') {
