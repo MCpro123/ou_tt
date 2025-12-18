@@ -1234,14 +1234,9 @@ setTimeout(() => {
 // };
 
 window.getPlayerInfo = function() {
-    return window.apis.getPlayerInfo()
-        .then(result => {
-            return displayPlayerInfo(result); // or raw result
-        })
-        .catch(err => {
-            console.error('Error getting player info:', err);
-            return null; // return null on error
-        });
+    if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
+        return window.apis.getPlayerInfo()
+    }
 };
 
 
