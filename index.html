@@ -224,10 +224,6 @@ function initializeSystem() {
                     
                     if (window.apis && typeof window.apis === 'object') {
                         console.log('APIs object received:', window.apis);
-                       
-                        setTimeout(() => {
-                            window.systemReady();
-                        }, 200);
                     } else {
                         throw new Error('getGameApis returned invalid object: ' + typeof window.apis);
                     }
