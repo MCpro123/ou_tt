@@ -1211,21 +1211,73 @@ setTimeout(() => {
 // }, 100);
 // }
 
+// window.getPlayerInfo = function() {
+//     return new Promise((resolve, reject) => {
+//         if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
+//             window.apis.getPlayerInfo()
+//                 .then(result => {
+//                     console.log('Raw getPlayerInfo result:', result);
+//                     const data = displayPlayerInfo(result);
+//                     resolve(data);
+//                 })
+//                 .catch(error => {
+//                     console.log('Error getting player info:', error);
+//                     reject(error);
+//                 });
+//         } else {
+//             reject(new Error('window.apis.getPlayerInfo not available'));
+//         }
+//     });
+// };
+
 window.getPlayerInfo = function() {
     return new Promise((resolve, reject) => {
         if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
             window.apis.getPlayerInfo()
                 .then(result => {
-                    console.log('Raw getPlayerInfo result:', result);
-                    const data = displayPlayerInfo(result);
-                    resolve(data);
+                    // Store the raw result in gameState
+                    gameState.playerInfo = result;
+                    
+                    // Log to console for debugging
+                    console.log('Player Info Result:', result);
+                    
+                    if (result && result.result) {
+                        const playerData = result.result;
+                        console.log('Player Details:', {
+                            goldenHeart: playerData.goldenHeart || '0',
+                            turn: playerData.turn || '0',
+                            remainTurn: playerData.remainTurn || '0',
+                            diamond: playerData.diamond || '0'
+                        });
+                        
+                        // Update UI elements if they exist
+                        const displayData = displayPlayerInfo(result);
+                        resolve(displayData);
+                    } else {
+                        console.log('No player data in response');
+                        resolve(['0', 0, 0, '0']);
+                    }
                 })
                 .catch(error => {
-                    console.log('Error getting player info:', error);
+                    console.error('Error getting player info:', error);
                     reject(error);
                 });
         } else {
-            reject(new Error('window.apis.getPlayerInfo not available'));
+            console.log('APIs not available yet, retrying in 500ms...');
+            // Retry after a short delay
+            setTimeout(() => {
+                if (window.apis && typeof window.apis.getPlayerInfo === 'function') {
+                    window.apis.getPlayerInfo()
+                        .then(result => {
+                            console.log('Player Info (retry):', result);
+                            const data = displayPlayerInfo(result);
+                            resolve(data);
+                        })
+                        .catch(reject);
+                } else {
+                    reject(new Error('APIs still not available'));
+                }
+            }, 500);
         }
     });
 };
