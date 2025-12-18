@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Hello</h1>
+    <div id="gateway"></div>
 </body>
 
 <script>
@@ -242,19 +243,35 @@ function initializeSystem() {
         
 
 // Load gateway.js
-        function loadGatewayJS() {
-            const gatewayScript = document.createElement('script');
-            gatewayScript.src = 'gateway.js';
-            gatewayScript.onload = function() {
-                console.log('gateway.js loaded successfully');
-                initializeSystem();
-            };
-
-                
-                console.log('Failed to load gateway.js', 'error');
-                console.log('Failed to load gateway.js. Please try again.', 'error');
+        // function loadGatewayJS() {
+        //     const gatewayScript = document.createElement('script');
+        //     gatewayScript.src = './gateway.js';
+        //     gatewayScript.onload = function() {
+        //         console.log('gateway.js loaded successfully');
+        //         initializeSystem();
+        //     };
             
-        }
+        // }
+
+function loadGatewayJS() {
+    const gatewayScript = document.createElement('script');
+    gatewayScript.src = 'gateway.js';
+    gatewayScript.onload = function() {
+        console.log('gateway.js loaded successfully');
+        initializeSystem();
+    };
+    gatewayScript.onerror = function() {
+        console.error('Failed to load gateway.js');
+    };
+
+    // Attach to the div with id="gateway"
+    const container = document.getElementById('gateway');
+    if (container) {
+        container.appendChild(gatewayScript);
+    } else {
+        console.error('Div #gateway not found');
+    }
+}
 
 
 // document.getElementById('fetchTokenBtn').addEventListener('click', function() {
