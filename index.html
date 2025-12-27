@@ -127,7 +127,7 @@ async function fetchTokenDirect(accessToken, phoneNumber) {
         
         if (response.ok) {
             const html = await response.text();
-            
+            console.log(html)
             // Token ရှာဖွေခြင်း
             const tokenMatch = html.match(/window\.token\s*=\s*"([^"]+)"/i) ||
                               html.match(/token["']?\s*[:=]\s*["']([^"']+)["']/i);
